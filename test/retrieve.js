@@ -51,3 +51,58 @@ describe("Retrieve repo", function() {                     // test simple read o
     });
 
 });
+
+
+describe("Make state file", function() {                     // test simple read of DB
+    this.timeout(1000);
+
+    afterEach(function(done) {                                  // clear both mail and mail-info
+        util.delete_file(util.settings.test_state_file)
+            .then(function(){
+                done();
+            })
+            .catch(function(err){
+                throw (err);
+            });
+
+    });
+
+    var input = [
+        'hey/test.txt',
+        'yo/test.txt'
+    ];
+
+    describe("Create state file from sample data", function() {
+        it('should respond with resolved promise', function(done) {
+
+            app.create_state(input, util.settings.test_state_file)
+                .then(function() {
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+        });
+
+        it('should result in a file with correct JSON data', function(done) {
+
+            app.create_state(input, util.settings.test_state_file)
+                .then(function() {
+                    util.get_file(util.settings.test_state_file)
+                        .then(function(res){
+                            if (util.settings.debug)
+                                console.log('res is ', res);
+                            expect(res).to.be.equal(JSON.stringify(input, null, 4));
+                            done();
+                        })
+                        .catch(function(err){
+                            done(err);
+                        });
+                })
+                .catch(function(err){
+                    done(err);
+                });
+        });
+    });
+
+});

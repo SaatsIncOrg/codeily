@@ -3,12 +3,16 @@ var fs                  = require('fs')
     , rimraf             = require('rimraf')
 
 exports.settings = {                                                        // must come after make-key
+    debug: true,
+
     repo: 'https://github.com/SaatsIncOrg/test.git',
 
-    set_temp_dir: '../temp',                    // outer
+    set_temp_dir: 'temp',                    // outer
     set_temp_file: 'temp',                      // name of repo dir
 
-    test_make_dir: '../test_make',
+    test_make_dir: 'test_make',
+
+    test_state_file: 'test_state.js',
 
     temp_dir: function(rand){ return (__dirname + "/temp"); },          // repo dir
     upload_dir: function(rand){ return (__dirname + "/../temp/clone" + rand + "/"); }
@@ -27,7 +31,8 @@ exports.cleanup = function(rand){                       // for now, just a wrapp
 };
 
 exports.get_file = function(path){                                                     // save it
-    console.log('Looking to get file ' + path + '.');
+    if (util.settings.debug)
+        console.log('Looking to get file ' + path + '.');
 
     return new Promise(function (resolve, reject) {                     // promisify
         fs.readFile(path, 'utf8', function(err, data){
@@ -41,7 +46,8 @@ exports.get_file = function(path){                                              
 
 
 exports.get_folder = function(path){                        // promisify wrapper
-    console.log('Looking to get folder ' + path + '.');
+    if (util.settings.debug)
+        console.log('Looking to get folder ' + path + '.');
     return new Promise(function(resolve, reject){
         fs.readdir(path, function(err, files) {
             if(err)
@@ -53,7 +59,8 @@ exports.get_folder = function(path){                        // promisify wrapper
 };
 
 exports.delete_folder = function(path){
-    console.log('Looking to delete folder ' + path + '.');
+    if (util.settings.debug)
+        console.log('Looking to delete folder ' + path + '.');
     return new Promise(function(resolve, reject){
         rimraf(path,function(err){              //////////////////////////////////////////// todo: last was working here
             if(err)
@@ -65,7 +72,8 @@ exports.delete_folder = function(path){
 };
 
 exports.delete_file = function(path){
-    console.log('Looking to delete file ' + path + '.');
+    if (util.settings.debug)
+        console.log('Looking to delete file ' + path + '.');
     return new Promise(function(resolve, reject){
         fs.unlink(path, function(err){
             if (err)
@@ -77,7 +85,8 @@ exports.delete_file = function(path){
 };
 
 exports.make_folder = function(path){
-    console.log('Looking to create folder ' + path + '.');
+    if (util.settings.debug)
+        console.log('Looking to create folder ' + path + '.');
     return new Promise(function (resolve, reject) {                     // promisify
 
         fs.mkdir(path, function (err) {
@@ -87,4 +96,12 @@ exports.make_folder = function(path){
                 resolve();
         });
     });
+};
+
+exports.is_json = function(string){
+    // Below returns 'true' if json
+    return (/^[\],:{}\s]*$/.test(string.replace(/\\["\\\/bfnrtu]/g, '@').
+        replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']').
+        replace(/(?:^|:|,)(?:\s*\[)+/g, ''))
+    );
 };

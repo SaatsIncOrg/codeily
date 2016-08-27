@@ -1,5 +1,6 @@
 var simpleGit     = require('simple-git')
     , fs              = require('fs')
+    , path_library =  require('path')
     , Promise         = require('bluebird')
     , util            = require('./util.js');
 
@@ -38,5 +39,72 @@ exports.retrieve = function(){
                 reject(err);
             })
 
+    });
+};
+
+exports.get_files = function(this_path){
+    return new Promise(function(resolve, reject){									// promisify
+
+        var walk = function(dir, done) {
+            var results = [];
+
+            fs.readdir(dir, function(err, list) {
+
+                if (err) return done(err);
+                var pending = list.length;
+                if (!pending) return done(null, results);
+                list.forEach(function(file) {
+                    file = path_library.resolve(dir, file);
+                    fs.stat(file, function(err, stat) {
+                        if (stat && stat.isDirectory()) {
+                            walk(file, function(err, res) {
+                                results = results.concat(res);
+                                if (!--pending) done(null, results);
+                            });
+                        } else {
+                            results.push(file);
+                            if (!--pending) done(null, results);
+                        }
+                    });
+                });
+
+            });
+        };
+
+        walk(this_path, function(err, results) {
+            if (err)
+                reject(err);
+            else
+                resolve(results);
+        });
+    });
+};
+
+exports.create_state = function(array, path){
+    return new Promise(function(resolve, reject){
+        if (path){
+            exports.write_file(array, path)
+                .then(function(){
+                    resolve();
+                })
+                .catch(function(){
+                    reject();
+                });
+
+        }
+        else
+            reject('No path provided to create state.');
+    });
+};
+
+exports.write_file = function(data, path){
+
+    return new Promise(function(resolve, reject){
+        fs.writeFile(path, JSON.stringify(data, null, 4), function (err) {
+            if (err)
+                reject(err);
+            else
+                resolve();
+        });
     });
 };
