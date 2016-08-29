@@ -14,6 +14,20 @@ module.exports = function(grunt) {
                 },
                 src: ['test/**/*.js', '!test/**/*.api.js']              // exclude api calls
             },
+            app: {
+                options: {
+                    reporter: 'spec',
+                    clearRequireCache: true
+                },
+                src: ['test/app.api.js']              // only app
+            },
+            all: {
+                options: {
+                    reporter: 'spec',
+                    clearRequireCache: true
+                },
+                src: ['test/**/*.js']              // exclude api calls
+            },
         },
 
 

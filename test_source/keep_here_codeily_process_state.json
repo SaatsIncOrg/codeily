@@ -1,0 +1,10 @@
+[
+    {
+        "file": "inside\\inside.txt",
+        "action": "add"
+    },
+    {
+        "file": "test.txt",
+        "action": "add"
+    }
+]

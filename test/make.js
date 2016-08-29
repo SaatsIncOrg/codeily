@@ -102,3 +102,67 @@ describe("Make file", function() {                     // test simple read of DB
     });
 
 });
+
+var expect_res = [
+    {file: 'inside\\inside.txt', action: 'add'},
+    {file: 'test.txt', action: 'add'}
+];
+
+describe("Make file", function() {                     // test simple read of DB
+    var test_source = 'test_source',
+        test_dest = 'test_make',
+        force_process_list = '/keep_here_codeily_process_state.json';
+
+    this.timeout(5000);
+
+    afterEach(function(done) {                                  // clear both mail and mail-info
+        util.delete_file(test_dest + '\\test.txt')
+            .then(function(){
+                return util.delete_file(test_dest + util.settings.state_filename);
+            })
+            .then(function(){
+                return util.delete_folder(test_dest + '\\inside');
+            })
+            .then(function(){
+                done();
+            })
+            .catch(function(err){
+                throw (err);
+            });
+    });
+
+
+    describe("Process List to copy / remove files", function() {
+        it('should respond with resolved promise', function(done) {
+
+            app.process_list(test_source, test_dest, force_process_list)
+                .then(function() {
+                    done();
+                })
+                .catch(function(err){
+                    done(err);
+                });
+        });
+
+        it('should result in a new file with same content', function(done) {
+
+            app.process_list(test_source, test_dest, force_process_list)
+                .then(function() {
+                    util.file_folder_exists(test_dest + '\\inside\\inside.txt')
+                        .then(function(exists){
+                            if (exists)
+                                done();
+                            else
+                                done('test.txt file was not created');
+                        })
+                        .catch(function(err){
+                            done(err);
+                        });
+                })
+                .catch(function(err){
+                    done(err);
+                });
+        });
+    });
+
+});
