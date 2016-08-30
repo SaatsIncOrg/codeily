@@ -19,7 +19,7 @@ module.exports = function(grunt) {
                     reporter: 'spec',
                     clearRequireCache: true
                 },
-                src: ['test/app.api.js']              // only app
+                src: ['test/app.api.js', 'test/app.js']              // only app
             },
             all: {
                 options: {

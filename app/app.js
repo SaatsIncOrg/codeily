@@ -12,23 +12,20 @@ var util                = require('./util')
     , retrieve          = require('./retrieve.js')
 
 
-function loop_run(target_path){
+function run_sequence(prov_vars){
     return new Promise(function(resolve, reject) {
         var config = {};
 
-        retrieve.get_provision(target_path)
-            .then(function(res){
-                return retrieve.retrieve(res.repo);
-            })
+        retrieve.retrieve(prov_vars.repo, prov_vars.branch)
             .then(function(){
                 return retrieve.get_config();
             })
             .then(function(res){                                                           // Build NEW STATE into repo-folder
                 config = res;
-                return retrieve.build_state(util.settings.temp_pathname(), config.ignore, target_path);
+                return retrieve.build_state(util.settings.temp_pathname(), config.ignore, prov_vars.path);
             })
             .then(function(){
-                return make.process_list(util.settings.temp_pathname(), target_path);
+                return make.process_list(util.settings.temp_pathname(), prov_vars.path);
             })
             .then(function(){                                                           // Delete temp repo folder
                 //return util.delete_folder(util.settings.temp_pathname());
@@ -42,29 +39,46 @@ function loop_run(target_path){
     });
 }
 
-exports.run = function(force_target_path){                      // "force_target_path" only for testing
-    var target_paths = force_target_path || util.settings.target_path;
+exports.get_provision = function(){       
+    var root = util.get_root();
+
+    return util.get_file(root + util.settings.provision_filename)
+        .then(function(content){
+            var rtn = [];
+            if (util.is_json(content))
+                rtn = JSON.parse(content);
+            return rtn;
+        })
+        .catch(function(err){
+            return err;
+        });
+};
+
+exports.run_loop = function(){                      // "force_target_path" only for testing
 
     return new Promise(function(resolve, reject){
-        function check_end(){
-            total++;
-            if (total >= length) {                            // if reached end of array, return successfully
-                resolve();
-            }
-        }
+        exports.get_provision()
+            .then(function(provision){
+                function check_end(){
+                    total++;
+                    if (total >= length) {                            // if reached end of array, return successfully
+                        resolve();
+                    }
+                }
 
-        var length = target_paths.length,
-            total = 0;
+                var length = provision.length,
+                    total = 0;
 
-        target_paths.forEach(function(element, index){
-            loop_run(element)
-                .then(function(){
-                    check_end();
-                })
-                .catch(function(err){
-                    reject('Error in Run: ' + err);
+                provision.forEach(function(element, index){
+                    run_sequence(element)
+                        .then(function(){
+                            check_end();
+                        })
+                        .catch(function(err){
+                            reject('Error in Run: ' + err);
+                        });
                 });
-        });
+            });
     });
 
 };

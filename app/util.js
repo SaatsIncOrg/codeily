@@ -1,6 +1,7 @@
-var fs                  = require('fs')
-    , Promise           = require('bluebird')
-    , rimraf             = require('rimraf')
+var fs                          = require('fs')
+    , path_library              = require('path')
+    , Promise                   = require('bluebird')
+    , rimraf                    = require('rimraf')
 
 exports.settings = {                                                        // must come after make-key
     debug: false,
@@ -15,6 +16,11 @@ exports.settings = {                                                        // m
 
     test_repo: 'https://github.com/SaatsIncOrg/test.git',
     test_make_dir: 'test_make',
+};
+
+exports.get_root = function(){
+    var this_file = path_library.resolve(__dirname);
+    return this_file.substr(0, this_file.lastIndexOf('\\'));
 };
 
 exports.get_rand = function (){               // up to 9999

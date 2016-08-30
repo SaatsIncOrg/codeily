@@ -4,12 +4,14 @@ var simpleGit               = require('simple-git')
     , Promise               = require('bluebird')
     , util                  = require('./util.js');
 
-function go_retrieve(repo){
+function go_retrieve(repo, branch){
     return new Promise(function(resolve, reject){
+        branch = branch || "master";
+
         util.make_folder(util.settings.temp_pathname())
             .then(function(){
                 simpleGit()
-                    .clone(repo, util.settings.temp_pathname())                                                            // clone
+                    .clone(repo, util.settings.temp_pathname(), ['-b', branch])                                                            // clone
                     .then(function (err) {
                         console.log('Clone finished');
 
@@ -33,7 +35,7 @@ function go_retrieve(repo){
     });
 }
 
-exports.retrieve = function(repo){
+exports.retrieve = function(repo, branch){
 
     return new Promise(function (resolve, reject) {                     // promisify
         util.log('Starting clone function - cloning from ' + util.settings.test_repo + ', to directory ' + util.settings.temp_pathname() + '.');
@@ -44,7 +46,7 @@ exports.retrieve = function(repo){
                     return util.delete_folder(util.settings.temp_pathname());
             })
             .then(function(){
-                return go_retrieve(repo);
+                return go_retrieve(repo, branch);
             })
             .then(function(){
                 resolve();
@@ -195,6 +197,7 @@ exports.build_state = function(source_path, ignore, target_path){               
 };
 
 
+/*
 
 // Get the provisioning (put on machine ahead of time & specifies repo)
 exports.get_provision = function(target_path){                   // "force_target_path" used only for testing
@@ -212,6 +215,7 @@ exports.get_provision = function(target_path){                   // "force_targe
             });
     });
 };
+*/
 
 // Get config (the file that comes from the repo)
 exports.get_config = function(force_temp_path){                   // "force_target_path" used only for testing

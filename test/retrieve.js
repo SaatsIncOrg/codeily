@@ -41,38 +41,7 @@ describe("Read folder", function() {
     });
 });
 
-describe("Get Provision", function() {
-    this.timeout(1000);
 
-    var folder_path = "test_make",
-        expect_this = {
-            repo: "https://github.com/SaatsIncOrg/test.git"
-        };
-
-    it('should respond with resolved promise', function(done) {
-
-        app.get_provision(folder_path)
-            .then(function() {
-                done();
-            })
-            .catch(function(err){
-                done(err);
-            });
-    });
-
-    it('should return an object with the correct info', function(done) {
-
-        app.get_provision(folder_path)
-            .then(function(res) {
-                util.log('Get provision:', res);
-                expect(res.repo).to.be.equal(expect_this.repo);
-                done();
-            })
-            .catch(function(err){
-                done(err);
-            });
-    });
-});
 
 describe("Get Config", function() {
     this.timeout(1000);
