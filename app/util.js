@@ -5,8 +5,6 @@ var fs                  = require('fs')
 exports.settings = {                                                        // must come after make-key
     debug: false,
 
-    test_repo: 'https://github.com/SaatsIncOrg/test.git',
-
     process_state_filename: "\\codeily_process_state.json",
     state_filename: "\\codeily_state.json",
     provision_filename: "\\_provision_codeily.json",
@@ -15,9 +13,8 @@ exports.settings = {                                                        // m
 
     temp_pathname: function(){ return ("temp\\clone\\"); },         // temporary storage of repo after downloading
 
+    test_repo: 'https://github.com/SaatsIncOrg/test.git',
     test_make_dir: 'test_make',
-
-
 };
 
 exports.get_rand = function (){               // up to 9999

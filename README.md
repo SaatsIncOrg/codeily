@@ -6,7 +6,7 @@ npm install codeily
 ```
 Once the plugin has been installed, it may be run using this:
 ```shell
-node app/resources.js
+node app/app.js
 ```
 
 ## Release History

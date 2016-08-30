@@ -155,13 +155,31 @@ exports.create_state = function(array, path){
     });
 };
 
-exports.build_state = function(source_path, ignore){                // creates new "process" state-file
-
+exports.build_state = function(source_path, ignore, target_path){                // creates new "process" state-file
+    var target_state = target_path + util.settings.state_filename;
     return new Promise(function(resolve, reject){
         if (source_path){
+            var new_state = [];
+
             exports.get_files(source_path, ignore)
                 .then(function(res){
-                    return util.make_file(res, source_path + util.settings.process_state_filename);             // writes "process_state" file into repo folder
+                    new_state = res;
+                    return util.file_folder_exists(target_state)
+                        .then(function(exists){
+                            if (exists)                                                 // if old 'state' exists, return it
+                                return util.get_file(target_state);
+                            else
+                                return "[]";                                              // if no old 'state' return empty
+                        })
+                        .catch(function(err){
+                            return 'Error getting old state.';
+                        });
+                })
+                .then(function(old_state){
+                    old_state = JSON.parse(old_state);
+                    //console.log('old state is ', old_state, ' and new state', new_state);
+                    var diff = exports.diff_state(old_state, new_state);
+                    return util.make_file(diff, source_path + util.settings.process_state_filename);             // writes "process_state" file into repo folder
                 })
                 .then(function(){
                     resolve();
@@ -179,8 +197,7 @@ exports.build_state = function(source_path, ignore){                // creates n
 
 
 // Get the provisioning (put on machine ahead of time & specifies repo)
-exports.get_provision = function(force_target_path){                   // "force_target_path" used only for testing
-    var target_path = force_target_path || util.settings.target_path;
+exports.get_provision = function(target_path){                   // "force_target_path" used only for testing
 
     return new Promise(function(resolve, reject){
         util.get_file(target_path + util.settings.provision_filename)

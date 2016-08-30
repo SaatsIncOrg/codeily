@@ -11,11 +11,10 @@ var util                = require('./util')
     , make              = require('./make.js')
     , retrieve          = require('./retrieve.js')
 
-exports.run = function(force_target_path){                      // "force_target_path" only for testing
-    var target_path = force_target_path || util.settings.target_path,
-        config = {};
 
+function loop_run(target_path){
     return new Promise(function(resolve, reject) {
+        var config = {};
 
         retrieve.get_provision(target_path)
             .then(function(res){
@@ -26,7 +25,7 @@ exports.run = function(force_target_path){                      // "force_target
             })
             .then(function(res){                                                           // Build NEW STATE into repo-folder
                 config = res;
-                return retrieve.build_state(util.settings.temp_pathname(), config.ignore);
+                return retrieve.build_state(util.settings.temp_pathname(), config.ignore, target_path);
             })
             .then(function(){
                 return make.process_list(util.settings.temp_pathname(), target_path);
@@ -38,7 +37,34 @@ exports.run = function(force_target_path){                      // "force_target
                 resolve();
             })
             .catch(function(err){
-                reject('Error in running App: ' + err);
+                reject('Error in Loop Run: ' + err);
             })
     });
+}
+
+exports.run = function(force_target_path){                      // "force_target_path" only for testing
+    var target_paths = force_target_path || util.settings.target_path;
+
+    return new Promise(function(resolve, reject){
+        function check_end(){
+            total++;
+            if (total >= length) {                            // if reached end of array, return successfully
+                resolve();
+            }
+        }
+
+        var length = target_paths.length,
+            total = 0;
+
+        target_paths.forEach(function(element, index){
+            loop_run(element)
+                .then(function(){
+                    check_end();
+                })
+                .catch(function(err){
+                    reject('Error in Run: ' + err);
+                });
+        });
+    });
+
 };
