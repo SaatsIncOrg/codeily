@@ -20,6 +20,9 @@ describe("Test App", function() {
                 return util.delete_file(target_path + '\\codeily.json');
             })
             .then(function(){
+                return util.delete_file(target_path + '\\codeily_after_script.sh');
+            })
+            .then(function(){
                 return util.delete_folder(target_path + '\\folder');
             })
             .then(function(){
@@ -33,7 +36,7 @@ describe("Test App", function() {
 
     it('should return a completed promise', function(done) {
 
-        app.run_loop()
+        app.run_loop(true)
             .then(function(){
                 done();
             })
@@ -43,7 +46,7 @@ describe("Test App", function() {
     });
 
     it('should result in a directory named Folder.', function(done) {
-        app.run_loop()
+        app.run_loop(true)
             .then(function(){
                 util.file_folder_exists(target_path + '\\folder')
                     .then(function(){
@@ -60,7 +63,7 @@ describe("Test App", function() {
 
 
     it('should result in Another.txt with certain content.', function(done) {
-        app.run_loop()
+        app.run_loop(true)
             .then(function(){
                 util.get_file(target_path + '\\another.txt')
                     .then(function(res){

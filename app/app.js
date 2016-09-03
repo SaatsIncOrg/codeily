@@ -10,6 +10,7 @@ var util                = require('./util')
     , Promise           = require('bluebird')
     , make              = require('./make.js')
     , retrieve          = require('./retrieve.js')
+    , exec              = require('child_process').exec
 
 
 function run_sequence(prov_vars){
@@ -28,7 +29,7 @@ function run_sequence(prov_vars){
                 return make.process_list(util.settings.temp_pathname(), prov_vars.path);
             })
             .then(function(){                                                           // Delete temp repo folder
-                //return util.delete_folder(util.settings.temp_pathname());
+                return util.delete_folder(util.settings.temp_pathname());
             })
             .then(function(){
                 resolve();
@@ -54,8 +55,47 @@ exports.get_provision = function(prov_path){
         });
 };
 
-exports.run_loop = function(prov_path){                      // "force_target_path" only for testing
-    prov_path = prov_path || (util.get_root() + util.settings.provision_filename);
+exports.execute = function(path){
+    return new Promise(function(resolve, reject){
+        exec('./' + path, // command line argument directly in string
+            function (err, stdout, stderr) {      // one easy function to capture data/errors
+                console.log('stdout: ' + stdout);
+                console.log('stderr: ' + stderr);
+                if (err)
+                    reject('Error Executing Script: ', err);
+                else
+                    resolve();
+            });
+    });
+};
+
+exports.loop_execute = function(scripts){
+    return new Promise(function(resolve, reject){
+        function check_end(){
+            total++;
+            if (total >= length) {                            // if reached end of array, return successfully
+                resolve();
+            }
+        }
+
+        // Start
+        var length = scripts.length,
+            total = 0;
+
+        scripts.forEach(function(element, index){
+            exports.execute(element)
+                .then(function(){
+                    check_end();
+                })
+                .catch(function(err){
+                    reject('Error in execute_list: ' + err);
+                });
+        });
+    });
+};
+
+exports.run_loop = function(suppress_exec){                      // "force_target_path" only for testing
+    var prov_path = util.settings.get_root() + util.settings.provision_filename;
 
     return new Promise(function(resolve, reject){
         exports.get_provision(prov_path)
@@ -70,14 +110,21 @@ exports.run_loop = function(prov_path){                      // "force_target_pa
                 var length = provision.length,
                     total = 0;
 
-                provision.forEach(function(element, index){
+                provision.forEach(function(element, index){             // loop on provisions and run each
                     run_sequence(element)
                         .then(function(){
                             check_end();
                         })
+                        .then(function(){
+                            if (!suppress_exec && element.script_after && element.script_after.length > 0)
+                                return exports.loop_execute(element.script_after);                             // passes the script_after array for looping on execute
+                        })
+                        .then(function(){
+                            resolve();
+                        })
                         .catch(function(err){
                             reject('Error in Run: ' + err);
-                        });
+                        });     //// todo: ADD RUN OF .SH FILE, AND A TEST-OVERRIDE TO BLOCK IT
                 });
             });
     });

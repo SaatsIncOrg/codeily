@@ -6,21 +6,18 @@ var fs                          = require('fs')
 exports.settings = {                                                        // must come after make-key
     debug: false,
 
+    root_path: ".",
+    get_root: function(){ return path_library.resolve(this.root_path); },
     process_state_filename: "\\codeily_process_state.json",
     state_filename: "\\codeily_state.json",
     provision_filename: "\\_provision_codeily.json",
     config_filename: "\\codeily.json",
     target_path: "",                                                // should be drawn from a provisioning file
 
-    temp_pathname: function(){ return ("temp\\clone\\"); },         // temporary storage of repo after downloading
+    temp_pathname: function(){ return (this.get_root() + "\\temp\\clone\\"); },         // temporary storage of repo after downloading
 
     test_repo: 'https://github.com/SaatsIncOrg/test.git',
     test_make_dir: 'test_make',
-};
-
-exports.get_root = function(){
-    var this_file = path_library.resolve(__dirname);
-    return this_file.substr(0, this_file.lastIndexOf('\\'));
 };
 
 exports.get_rand = function (){               // up to 9999

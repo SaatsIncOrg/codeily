@@ -221,15 +221,23 @@ exports.get_provision = function(target_path){                   // "force_targe
 exports.get_config = function(force_temp_path){                   // "force_target_path" used only for testing
     var temp_path = force_temp_path || util.settings.temp_pathname();
     return new Promise(function(resolve, reject){
-        util.get_file(temp_path + util.settings.config_filename)
-            .then(function(res){
-                if (util.is_json(res))
-                    resolve(JSON.parse(res));
-                else
-                    reject('Config file codeily.json is not valid JSON.')
+        util.file_folder_exists(temp_path + util.settings.config_filename)
+            .then(function(exists){
+                if (exists){                                                        // exists, get contents
+                    util.get_file(temp_path + util.settings.config_filename)
+                        .then(function(res){
+                            if (util.is_json(res))
+                                resolve(JSON.parse(res));
+                            else
+                                reject('Config file codeily.json is not valid JSON.')
+                        })
+                        .catch(function(err){
+                            reject(err);
+                        });
+                }
+                else                                                                // does not exist
+                    resolve({ignore: [], script_after: []});                        // return empty
             })
-            .catch(function(err){
-                reject(err);
-            });
+
     });
 };

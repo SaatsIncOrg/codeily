@@ -12,7 +12,8 @@ describe("Get Provision", function() {
         "repo": "https://github.com/SaatsIncOrg/test.git",
         "branch": "master"
     }],
-        prov_path = util.get_root() + util.settings.provision_filename;
+        prov_path = util.settings.get_root() + util.settings.provision_filename;
+    //console.log('(((((((((((((((( ', prov_path);
 
     it('should respond with resolved promise', function(done) {
 

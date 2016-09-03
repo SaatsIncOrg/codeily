@@ -20,6 +20,14 @@ Codeily requires this to be in place:
   }
 ]
 ```
+- A file named ```codeily.json``` in the repo being called is optional, containing something below. Of course, if a script is sited, it must be included also.
+```
+{
+  "ignore": [".git","README.md"],
+  "script_after": ["codeily_script_after.sh"]
+}
+```
 
 ## Release History
-0.0.1 - Initial
+0.0.4 - Add ability to execute script after.
+0.0.1 - Initial.
