@@ -7,9 +7,7 @@ var fs                  = require('fs')
 
 exports.make_dir = function(path){                          // takes full file-path
     return new Promise(function(resolve, reject) {
-        var slash_forward = path.lastIndexOf('/'),
-            slash_backward = path.lastIndexOf('\\'),
-            slash = ((slash_forward > 0) ? slash_forward : slash_backward),
+        var slash = path.lastIndexOf('/'),
             path2 = path.substr(0, slash);
         util.log("Looking to create folder tree " + path2);
 
@@ -67,8 +65,8 @@ exports.loop_list = function(source_path, target_path, array){
             total = 0;
 
         array.forEach(function (element, index) {
-            var target = target_path + '\\' + element.file,
-                source = source_path + '\\' + element.file;
+            var target = target_path + '/' + element.file,
+                source = source_path + '/' + element.file;
             //console.log('###################', target, source);
 
             if (element.action === 'remove'){                           // remove

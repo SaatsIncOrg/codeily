@@ -104,7 +104,7 @@ describe("Make file", function() {                     // test simple read of DB
 });
 
 var expect_res = [
-    {file: 'inside\\inside.txt', action: 'add'},
+    {file: 'inside/inside.txt', action: 'add'},
     {file: 'test.txt', action: 'add'}
 ];
 
@@ -116,12 +116,12 @@ describe("Make file", function() {                     // test simple read of DB
     this.timeout(5000);
 
     afterEach(function(done) {                                  // clear both mail and mail-info
-        util.delete_file(test_dest + '\\test.txt')
+        util.delete_file(test_dest + '/test.txt')
             .then(function(){
                 return util.delete_file(test_dest + util.settings.state_filename);
             })
             .then(function(){
-                return util.delete_folder(test_dest + '\\inside');
+                return util.delete_folder(test_dest + '/inside');
             })
             .then(function(){
                 done();
@@ -148,7 +148,7 @@ describe("Make file", function() {                     // test simple read of DB
 
             app.process_list(test_source, test_dest, force_process_list)
                 .then(function() {
-                    util.file_folder_exists(test_dest + '\\inside\\inside.txt')
+                    util.file_folder_exists(test_dest + '/inside/inside.txt')
                         .then(function(exists){
                             if (exists)
                                 done();

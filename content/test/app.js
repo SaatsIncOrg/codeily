@@ -8,7 +8,7 @@ describe("Get Provision", function() {
     this.timeout(1000);
 
     var expect_this = [{
-        "path": "test_make\\",
+        "path": "test_make/",
         "repo": "https://github.com/SaatsIncOrg/test.git",
         "branch": "master"
     }],

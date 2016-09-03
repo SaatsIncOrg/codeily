@@ -29,5 +29,6 @@ Codeily requires this to be in place:
 ```
 
 ## Release History
+0.0.5 - Convert to Unix slashes on paths.
 0.0.4 - Add ability to execute script after.
 0.0.1 - Initial.

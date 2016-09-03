@@ -111,7 +111,7 @@ describe("Make state file", function() {                     // test simple read
         'yo/test.txt'
     ],
         process_state = "test_source" + util.settings.process_state_filename,
-        folder_path = "test_source\\";
+        folder_path = "test_source/";
 
 
     afterEach(function(done) {                                  // clear new

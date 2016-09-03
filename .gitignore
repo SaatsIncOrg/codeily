@@ -1,6 +1,7 @@
-node_modules
-npm-debug.log
-temp/clone*
+content/node_modules
+content/npm-debug.log
+content/temp/clone*
 .idea
 .git
 _provision_codeily.json
+.vagrant

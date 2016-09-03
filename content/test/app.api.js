@@ -9,21 +9,21 @@ describe("Test App", function() {
     var target_path = 'test_make';
 
     afterEach(function(done) {                                  // clear new
-        util.delete_file(target_path + '\\another.txt')
+        util.delete_file(target_path + '/another.txt')
             .then(function(){
-                return util.delete_file(target_path + '\\index.txt');
+                return util.delete_file(target_path + '/index.txt');
             })
             .then(function(){
-                return util.delete_file(target_path + '\\codeily_state.json');
+                return util.delete_file(target_path + '/codeily_state.json');
             })
             .then(function(){
-                return util.delete_file(target_path + '\\codeily.json');
+                return util.delete_file(target_path + '/codeily.json');
             })
             .then(function(){
-                return util.delete_file(target_path + '\\codeily_after_script.sh');
+                return util.delete_file(target_path + '/codeily_after_script.sh');
             })
             .then(function(){
-                return util.delete_folder(target_path + '\\folder');
+                return util.delete_folder(target_path + '/folder');
             })
             .then(function(){
                 done();
@@ -48,7 +48,7 @@ describe("Test App", function() {
     it('should result in a directory named Folder.', function(done) {
         app.run_loop(true)
             .then(function(){
-                util.file_folder_exists(target_path + '\\folder')
+                util.file_folder_exists(target_path + '/folder')
                     .then(function(){
                         done();
                     })
@@ -65,7 +65,7 @@ describe("Test App", function() {
     it('should result in Another.txt with certain content.', function(done) {
         app.run_loop(true)
             .then(function(){
-                util.get_file(target_path + '\\another.txt')
+                util.get_file(target_path + '/another.txt')
                     .then(function(res){
                         expect(util.strip_returns(res)).to.equal("Here's another file to go along with the first!");
                         done();
