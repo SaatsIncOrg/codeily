@@ -11,11 +11,12 @@ describe("Get Provision", function() {
         "path": "test_make\\",
         "repo": "https://github.com/SaatsIncOrg/test.git",
         "branch": "master"
-    }];
+    }],
+        prov_path = util.get_root() + util.settings.provision_filename;
 
     it('should respond with resolved promise', function(done) {
 
-        app.get_provision()
+        app.get_provision(prov_path)
             .then(function() {
                 done();
             })
@@ -26,7 +27,7 @@ describe("Get Provision", function() {
 
     it('should return an object with the correct info.', function(done) {
 
-        app.get_provision()
+        app.get_provision(prov_path)
             .then(function(res) {
                 util.log('Get provision:', res);
                 expect(res).to.deep.equal(expect_this);

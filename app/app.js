@@ -35,14 +35,14 @@ function run_sequence(prov_vars){
             })
             .catch(function(err){
                 reject('Error in Loop Run: ' + err);
-            })
+            });
     });
 }
 
-exports.get_provision = function(){       
-    var root = util.get_root();
+exports.get_provision = function(prov_path){
 
-    return util.get_file(root + util.settings.provision_filename)
+
+    return util.get_file(prov_path)
         .then(function(content){
             var rtn = [];
             if (util.is_json(content))
@@ -54,10 +54,11 @@ exports.get_provision = function(){
         });
 };
 
-exports.run_loop = function(){                      // "force_target_path" only for testing
+exports.run_loop = function(prov_path){                      // "force_target_path" only for testing
+    prov_path = prov_path || (util.get_root() + util.settings.provision_filename);
 
     return new Promise(function(resolve, reject){
-        exports.get_provision()
+        exports.get_provision(prov_path)
             .then(function(provision){
                 function check_end(){
                     total++;

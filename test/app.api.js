@@ -60,7 +60,7 @@ describe("Test App", function() {
 
 
     it('should result in Another.txt with certain content.', function(done) {
-        app.run_loop(target_path)
+        app.run_loop()
             .then(function(){
                 util.get_file(target_path + '\\another.txt')
                     .then(function(res){
