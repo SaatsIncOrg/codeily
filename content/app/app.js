@@ -65,7 +65,7 @@ exports.execute = function(path){
     return new Promise(function(resolve, reject){
         var this_path = util.settings.temp_pathname() + path;
         var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 770 " + this_path + "; sudo " + this_path;
-        util.log('Looking to execute: ' + to_execute)
+        util.log('Looking to execute: ' + to_execute);
 
         exec(to_execute, // command line argument directly in string
             function (err, stdout, stderr) {      // one easy function to capture data/errors

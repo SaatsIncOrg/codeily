@@ -38,6 +38,7 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.10 - Add main to package.
 0.0.9 - Fix chmod.
 0.0.8 - Add chmod before execution.
 0.0.7 - Fix error in execution.
