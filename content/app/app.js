@@ -13,7 +13,9 @@ var util                = require('./util')
     , exec              = require('child_process').exec
 
 
-function run_sequence(prov_vars){
+function run_sequence(prov_vars, suppress_exec){
+    suppress_exec = suppress_exec || false;
+
     return new Promise(function(resolve, reject) {
         var config = {};
 
@@ -27,6 +29,10 @@ function run_sequence(prov_vars){
             })
             .then(function(){
                 return make.process_list(util.settings.temp_pathname(), prov_vars.path);
+            })
+            .then(function(){
+                if (!suppress_exec && config.script_after && config.script_after.length > 0)
+                    return exports.loop_execute(config.script_after);                             // passes the script_after array for looping on execute
             })
             .then(function(){                                                           // Delete temp repo folder
                 return util.delete_folder(util.settings.temp_pathname());
@@ -57,7 +63,11 @@ exports.get_provision = function(prov_path){
 
 exports.execute = function(path){
     return new Promise(function(resolve, reject){
-        exec('./' + path, // command line argument directly in string
+        var this_path = util.settings.temp_pathname() + path;
+        var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 770 " + this_path + "; sudo " + this_path;
+        util.log('Looking to execute: ' + to_execute)
+
+        exec(to_execute, // command line argument directly in string
             function (err, stdout, stderr) {      // one easy function to capture data/errors
                 console.log('stdout: ' + stdout);
                 console.log('stderr: ' + stderr);
@@ -111,20 +121,16 @@ exports.run_loop = function(suppress_exec){                      // "force_targe
                     total = 0;
 
                 provision.forEach(function(element, index){             // loop on provisions and run each
-                    run_sequence(element)
+                    run_sequence(element, suppress_exec)
                         .then(function(){
                             check_end();
-                        })
-                        .then(function(){
-                            if (!suppress_exec && element.script_after && element.script_after.length > 0)
-                                return exports.loop_execute(element.script_after);                             // passes the script_after array for looping on execute
                         })
                         .then(function(){
                             resolve();
                         })
                         .catch(function(err){
                             reject('Error in Run: ' + err);
-                        });     //// todo: ADD RUN OF .SH FILE, AND A TEST-OVERRIDE TO BLOCK IT
+                        });
                 });
             });
     });

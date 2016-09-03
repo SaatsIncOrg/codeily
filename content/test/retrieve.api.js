@@ -37,7 +37,7 @@ describe("Retrieve repo", function() {                     // test simple read o
                 .then(function() {
                     util.get_folder(util.settings.temp_pathname())
                         .then(function(res){
-                            console.log('res is ', res);
+                            util.log('res is ', res);
                             done();
                         })
                         .catch(function(err){

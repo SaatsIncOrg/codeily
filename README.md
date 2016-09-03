@@ -38,6 +38,9 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.9 - Fix chmod.
+0.0.8 - Add chmod before execution.
+0.0.7 - Fix error in execution.
 0.0.6 - Convert completely to Unix.
 0.0.5 - Convert to Unix slashes on paths.
 0.0.4 - Add ability to execute script after.

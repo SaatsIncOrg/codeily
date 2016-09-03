@@ -7,7 +7,7 @@ var app 			    = require('../app/app.js')
 describe("Test App", function() {
     this.timeout(10000);
     var target_path = 'test_make',
-        script_result = '/home/vagrant/codeily/bash_script_works.txt';
+        script_result = '/home/vagrant/codeily/test_make/bash_script_works.txt';
 
     afterEach(function(done) {                                  // clear new
         util.delete_file(target_path + '/another.txt')
@@ -26,7 +26,7 @@ describe("Test App", function() {
             .then(function(){
                 return util.delete_folder(target_path + '/folder');
             })
-            .then(function(){                                   // this may or may not exist - don't chain other things after it
+            .then(function(){                                   ///////// this may not run successfully, so don't chain things after it
                 return util.delete_file(script_result);
             })
             .then(function(){
@@ -53,8 +53,11 @@ describe("Test App", function() {
         app.run_loop(true)
             .then(function(){
                 util.file_folder_exists(target_path + '/folder')
-                    .then(function(){
-                        done();
+                    .then(function(exists){
+                        if (exists)
+                            done();
+                        else
+                            done('File does not exist.');
                     })
                     .catch(function(err){
                         done(err);
@@ -88,8 +91,11 @@ describe("Test App", function() {
         app.run_loop()
             .then(function(){
                 util.file_folder_exists(script_result)
-                    .then(function(){
-                        done();
+                    .then(function(exists){
+                        if (exists)
+                            done();
+                        else
+                            done('File missing.');
                     })
                     .catch(function(err){
                         done(err);
