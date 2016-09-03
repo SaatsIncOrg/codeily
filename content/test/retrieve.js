@@ -6,7 +6,7 @@ var app 			    = require('../app/retrieve.js')
 
 var expect_res = [
     {file: 'codeily.json', action: 'add'},
-    {file: 'inside\\inside.txt', action: 'add'},
+    {file: 'inside/inside.txt', action: 'add'},
     {file: 'keep_here_codeily_process_state.json', action: 'add'},
     {file: 'test.txt', action: 'add'}
 ];
@@ -14,7 +14,7 @@ var expect_res = [
 describe("Read folder", function() {
     this.timeout(1000);
 
-    var folder_path = "test_source\\";
+    var folder_path = "test_source/";
 
     it('should respond with resolved promise', function(done) {
 

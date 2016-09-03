@@ -6,7 +6,8 @@ var app 			    = require('../app/app.js')
 
 describe("Test App", function() {
     this.timeout(10000);
-    var target_path = 'test_make';
+    var target_path = 'test_make',
+        script_result = '/home/vagrant/codeily/bash_script_works.txt';
 
     afterEach(function(done) {                                  // clear new
         util.delete_file(target_path + '/another.txt')
@@ -24,6 +25,9 @@ describe("Test App", function() {
             })
             .then(function(){
                 return util.delete_folder(target_path + '/folder');
+            })
+            .then(function(){                                   // this may or may not exist - don't chain other things after it
+                return util.delete_file(script_result);
             })
             .then(function(){
                 done();
@@ -68,6 +72,23 @@ describe("Test App", function() {
                 util.get_file(target_path + '/another.txt')
                     .then(function(res){
                         expect(util.strip_returns(res)).to.equal("Here's another file to go along with the first!");
+                        done();
+                    })
+                    .catch(function(err){
+                        done(err);
+                    });
+            })
+            .catch(function(err){
+                done(err);
+            });
+    });
+
+
+    it('script execute should result in a file named bash_script_works.txt.', function(done) {
+        app.run_loop()
+            .then(function(){
+                util.file_folder_exists(script_result)
+                    .then(function(){
                         done();
                     })
                     .catch(function(err){

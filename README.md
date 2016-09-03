@@ -28,7 +28,17 @@ Codeily requires this to be in place:
 }
 ```
 
+## Development
+Requires:
+- A Linux system.
+- git: ```sudo apt-get install git```
+- grunt-cli: ```npm install -g grunt-cli```
+Run:
+- Normal: ```grunt```
+- Include github calls: ```grunt mochaTest:all```
+
 ## Release History
+0.0.6 - Convert completely to Unix.
 0.0.5 - Convert to Unix slashes on paths.
 0.0.4 - Add ability to execute script after.
 0.0.1 - Initial.

@@ -1,6 +1,6 @@
 [
     {
-        "file": "inside\\inside.txt",
+        "file": "inside/inside.txt",
         "action": "add"
     },
     {

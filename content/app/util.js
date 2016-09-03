@@ -8,13 +8,17 @@ exports.settings = {                                                        // m
 
     root_path: ".",
     get_root: function(){ return path_library.resolve(this.root_path); },
+    get_app_path: function(){
+        var rtn = path_library.resolve(__dirname);
+        return rtn.replace(new RegExp('/app$'), '');                     // get rid of /app directory at end
+    },
     process_state_filename: "/codeily_process_state.json",
     state_filename: "/codeily_state.json",
     provision_filename: "/_provision_codeily.json",
     config_filename: "/codeily.json",
     target_path: "",                                                // should be drawn from a provisioning file
 
-    temp_pathname: function(){ return (this.get_root() + "/temp/clone/"); },         // temporary storage of repo after downloading
+    temp_pathname: function(){ return (this.get_app_path() + "/temp/clone/"); },         // temporary storage of repo after downloading
 
     test_repo: 'https://github.com/SaatsIncOrg/test.git',
     test_make_dir: 'test_make',
@@ -87,7 +91,7 @@ exports.get_folder = function(path){                        // promisify wrapper
 };
 
 exports.delete_folder = function(path){
-    exports.log('Looking to delete folder ' + path + '.');
+    console.log('Looking to delete folder ' + path + '.');
     return new Promise(function(resolve, reject){
         rimraf(path,function(err){
             if(err)
