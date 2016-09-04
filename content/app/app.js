@@ -17,7 +17,8 @@ function run_sequence(prov_vars, suppress_exec){
     suppress_exec = suppress_exec || false;
 
     return new Promise(function(resolve, reject) {
-        var config = {};
+        var config = {},
+            source_path = '';
 
         retrieve.retrieve(prov_vars.repo, prov_vars.branch)
             .then(function(){
@@ -25,10 +26,11 @@ function run_sequence(prov_vars, suppress_exec){
             })
             .then(function(res){                                                           // Build NEW STATE into repo-folder
                 config = res;
-                return retrieve.build_state(util.settings.temp_pathname(), config.ignore, prov_vars.path);
+                source_path = util.settings.temp_pathname() + (config.repo_path || '');
+                return retrieve.build_state(source_path, config.ignore, prov_vars.path);               // use repo-path to limit copies, if available
             })
             .then(function(){
-                return make.process_list(util.settings.temp_pathname(), prov_vars.path);
+                return make.process_list(source_path, prov_vars.path);                                  // use same repo-path as above
             })
             .then(function(){
                 if (!suppress_exec && config.script_after && config.script_after.length > 0)

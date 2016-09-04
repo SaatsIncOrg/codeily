@@ -24,9 +24,11 @@ Codeily requires this to be in place:
 ```
 {
   "ignore": [".git","README.md"],
-  "script_after": ["codeily_script_after.sh"]
+  "script_after": ["codeily_script_after.sh"],
+  "repo_path": ""
 }
 ```
+* "repo_path" refers to which folder in the repo should be copied. Defaults to blank to copy the entire repo.
 
 ## Development
 Requires:
@@ -38,6 +40,8 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.12 - Fix repo path bug.
+0.0.11 - Add repo path.
 0.0.10 - Add main to package.
 0.0.9 - Fix chmod.
 0.0.8 - Add chmod before execution.
