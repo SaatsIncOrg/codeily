@@ -187,6 +187,16 @@ exports.create_state = function(array, path){
     });
 };
 
+// Strip old 'remove' items from array
+exports.strip_remove_from_state = function(array){
+    var rtn = [];
+    array.forEach(function(element){
+        if (element.action !== 'remove')
+            rtn.push(element);
+    });
+    return rtn;
+};
+
 exports.build_state = function(source_path, ignore, target_path){                // creates new "process" state-file
     var target_state = target_path + util.settings.state_filename;
     return new Promise(function(resolve, reject){
@@ -208,7 +218,7 @@ exports.build_state = function(source_path, ignore, target_path){               
                         });
                 })
                 .then(function(old_state){
-                    old_state = JSON.parse(old_state);
+                    old_state = exports.strip_remove_from_state(JSON.parse(old_state));                          // strip the 'removes' from old state, as they are already complete
                     //console.log('old state is ', old_state, ' and new state', new_state);
                     var diff = exports.diff_state(old_state, new_state);
                     return util.make_file(diff, source_path + util.settings.process_state_filename);             // writes "process_state" file into repo folder

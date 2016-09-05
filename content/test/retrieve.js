@@ -103,6 +103,27 @@ describe("Diff state", function() {
     });
 });
 
+describe("Strip 'remove'", function() {
+
+    var state = [
+            {file: 'test1', action: 'add'},
+            {file: 'test2', action: 'remove'},
+            {file: 'test3', action: 'add'}
+        ],
+        state_expect = [
+            {file: 'test1', action: 'add'},
+            {file: 'test3', action: 'add'}
+        ];
+
+
+    it('should return an array with the "remove" items gone.', function() {
+
+        var res = app.strip_remove_from_state(state);
+        expect(res).to.be.deep.equal(state_expect);
+
+    });
+});
+
 describe("Make state file", function() {                     // test simple read of DB
     this.timeout(1000);
 
