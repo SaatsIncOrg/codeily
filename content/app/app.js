@@ -20,13 +20,13 @@ function run_sequence(prov_vars, suppress_exec){
         var config = {},
             source_path = '';
 
-        retrieve.retrieve(prov_vars.repo, prov_vars.branch)
+        retrieve.retrieve(prov_vars.tag, prov_vars.repo, prov_vars.branch)
             .then(function(){
-                return retrieve.get_config();
+                return retrieve.get_config(prov_vars.tag);
             })
             .then(function(res){                                                           // Build NEW STATE into repo-folder
                 config = res;
-                source_path = util.settings.temp_pathname() + (config.repo_path || '');
+                source_path = util.settings.temp_pathname(prov_vars.tag) + (config.repo_path || '');
                 return retrieve.build_state(source_path, config.ignore, prov_vars.path);               // use repo-path to limit copies, if available
             })
             .then(function(){
@@ -34,10 +34,10 @@ function run_sequence(prov_vars, suppress_exec){
             })
             .then(function(){
                 if (!suppress_exec && config.script_after && config.script_after.length > 0)
-                    return exports.loop_execute(config.script_after);                             // passes the script_after array for looping on execute
+                    return exports.loop_execute(prov_vars.tag, config.script_after);                             // passes the script_after array for looping on execute
             })
             .then(function(){                                                           // Delete temp repo folder
-                return util.delete_folder(util.settings.temp_pathname());
+                //return util.delete_folder(util.settings.temp_pathname(prov_vars.tag));
             })
             .then(function(){
                 resolve();
@@ -63,9 +63,9 @@ exports.get_provision = function(prov_path){
         });
 };
 
-exports.execute = function(path){
+exports.execute = function(tag, path){
     return new Promise(function(resolve, reject){
-        var this_path = util.settings.temp_pathname() + path;
+        var this_path = util.settings.temp_pathname(tag) + '/' + path;
         var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 770 " + this_path + "; sudo " + this_path;
         util.log('Looking to execute: ' + to_execute);
 
@@ -81,7 +81,7 @@ exports.execute = function(path){
     });
 };
 
-exports.loop_execute = function(scripts){
+exports.loop_execute = function(tag, scripts){
     return new Promise(function(resolve, reject){
         function check_end(){
             total++;
@@ -95,7 +95,7 @@ exports.loop_execute = function(scripts){
             total = 0;
 
         scripts.forEach(function(element, index){
-            exports.execute(element)
+            exports.execute(tag, element)
                 .then(function(){
                     check_end();
                 })
@@ -123,6 +123,9 @@ exports.run_loop = function(suppress_exec){                      // "force_targe
                     total = 0;
 
                 provision.forEach(function(element, index){             // loop on provisions and run each
+                    var tags = element.repo.split('/');
+                    element.tag = (tags[tags.length-2] + '_' + tags[tags.length-1]).toLowerCase().replace('.', '_');          // create tag from repo name, and append to prov_vars
+
                     run_sequence(element, suppress_exec)
                         .then(function(){
                             check_end();

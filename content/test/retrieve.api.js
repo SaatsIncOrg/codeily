@@ -22,7 +22,7 @@ describe("Retrieve repo", function() {                     // test simple read o
     describe("Cloning down repo", function() {
         it('should respond with resolved promise', function(done) {
 
-            app.retrieve(util.settings.test_repo)
+            app.retrieve('', util.settings.test_repo)
                 .then(function() {
                     done();
                 })
@@ -33,7 +33,7 @@ describe("Retrieve repo", function() {                     // test simple read o
 
         it('should result in a new folder', function(done) {
 
-            app.retrieve(util.settings.test_repo)
+            app.retrieve('', util.settings.test_repo)
                 .then(function() {
                     util.get_folder(util.settings.temp_pathname())
                         .then(function(res){

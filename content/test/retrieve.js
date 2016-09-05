@@ -53,7 +53,7 @@ describe("Get Config", function() {
 
     it('should respond with resolved promise', function(done) {
 
-        app.get_config(folder_path)
+        app.get_config('', folder_path)
             .then(function() {
                 done();
             })
@@ -64,7 +64,7 @@ describe("Get Config", function() {
 
     it('should return an object with the correct info', function(done) {
 
-        app.get_config(folder_path)
+        app.get_config('', folder_path)
             .then(function(res) {
                 util.log('Get config:', res);
                 expect(res.ignore).to.be.deep.equal(expect_this.ignore);

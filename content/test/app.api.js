@@ -26,6 +26,9 @@ describe("Test App", function() {
             .then(function(){
                 return util.delete_folder(target_path + '/folder');
             })
+            .then(function(){
+                return util.delete_folder(util.settings.temp_pathname('saatsincorg_test_git'));               // delete temp repo
+            })
             .then(function(){                                   ///////// this may not run successfully, so don't chain things after it
                 return util.delete_file(script_result);
             })
@@ -43,6 +46,20 @@ describe("Test App", function() {
         app.run_loop(true)
             .then(function(){
                 done();
+            })
+            .catch(function(err){
+                done(err);
+            });
+    });
+
+    it('if pulling, it should return a completed promise', function(done) {
+
+        app.run_loop(true)
+            .then(function(){
+                return app.run_loop(true)               // run loop twice without cleanup between. Should pull the second time.
+                    .then(function(){
+                        done();
+                    });
             })
             .catch(function(err){
                 done(err);

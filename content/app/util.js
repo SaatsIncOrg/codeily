@@ -16,9 +16,12 @@ exports.settings = {                                                        // m
     state_filename: "/codeily_state.json",
     provision_filename: "/_provision_codeily.json",
     config_filename: "/codeily.json",
-    target_path: "",                                                // should be drawn from a provisioning file
+    target_path: "",                                                     // should be drawn from a provisioning file
 
-    temp_pathname: function(){ return (this.get_app_path() + "/temp/clone/"); },         // temporary storage of repo after downloading
+    temp_pathname: function(tag){                                        // temporary storage of repo after downloading
+        tag = tag || '';
+        return (this.get_app_path() + "/temp/clone_" + tag);
+    },
 
     test_repo: 'https://github.com/SaatsIncOrg/test.git',
     test_make_dir: 'test_make',
@@ -30,9 +33,9 @@ exports.get_rand = function (){               // up to 9999
     return Math.floor(milliseconds * quantity_of_nums / 1000);
 };
 
-exports.cleanup = function(){                       // for now, just a wrapper for
+exports.cleanup = function(tag){                       // for now, just a wrapper for
 
-    return exports.delete_folder(exports.settings.temp_pathname());
+    return exports.delete_folder(exports.settings.temp_pathname(tag));
 
 };
 

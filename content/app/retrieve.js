@@ -4,21 +4,21 @@ var simpleGit               = require('simple-git')
     , Promise               = require('bluebird')
     , util                  = require('./util.js');
 
-function go_retrieve(repo, branch){
+function go_retrieve(tag, repo, branch){
     return new Promise(function(resolve, reject){
         branch = branch || "master";
 
-        util.make_folder(util.settings.temp_pathname())
+        util.make_folder(util.settings.temp_pathname(tag))
             .then(function(){
                 simpleGit()
-                    .clone(repo, util.settings.temp_pathname(), ['-b', branch])                                                            // clone
+                    .clone(repo, util.settings.temp_pathname(tag), ['-b', branch])                                                            // clone
                     .then(function (err) {
                         console.log('Clone finished');
 
                         if (err) {                                                                      // if can't clone, faile and delete directory
                             console.log('Clone failed');
 
-                            util.cleanup()
+                            util.cleanup(tag)
                                 .finally(function (err) {
                                     reject(err);
                                 });
@@ -34,19 +34,49 @@ function go_retrieve(repo, branch){
             })
     });
 }
+function go_pull(tag, branch){
+    return new Promise(function(resolve, reject){
+        branch = branch || "master";
 
-exports.retrieve = function(repo, branch){
+        console.log('About to pull branch ' + branch + ' at folder ' + util.settings.temp_pathname(tag));
+
+        simpleGit(util.settings.temp_pathname(tag))
+            .pull()
+            .checkout(branch)
+            .then(function (err) {
+
+                if (err) {                                                                      // if can't clone, faile and delete directory
+                    console.log('Pull/checkout failed');
+
+                    util.cleanup(tag)
+                        .finally(function (err) {
+                            reject(err);
+                        });
+                }
+                else {
+                    console.log('Successfully pulled & checked-out branch!');
+                    resolve();
+                }
+            });
+
+    });
+}
+
+exports.retrieve = function(tag, repo, branch){
 
     return new Promise(function (resolve, reject) {                     // promisify
-        util.log('Starting clone function - cloning from ' + util.settings.test_repo + ', to directory ' + util.settings.temp_pathname() + '.');
+        util.log('Starting clone/pull - from ' + util.settings.test_repo + ', to directory ' + util.settings.temp_pathname(tag) + '.');
 
-        util.file_folder_exists(util.settings.temp_pathname())
+        util.file_folder_exists(util.settings.temp_pathname(tag))
             .then(function(exists){
-                if (exists)                                 // if temp folder already there, delete it.
-                    return util.delete_folder(util.settings.temp_pathname());
-            })
-            .then(function(){
-                return go_retrieve(repo, branch);
+                if (exists)
+                    return go_pull(tag, branch);
+                else
+                    return go_retrieve(tag, repo, branch);
+
+
+                //if (exists)                                 // if temp folder already there, delete it.
+                //    return util.delete_folder(util.settings.temp_pathname(tag));
             })
             .then(function(){
                 resolve();
@@ -192,7 +222,7 @@ exports.build_state = function(source_path, ignore, target_path){               
 
         }
         else
-            reject('Folder and state paths must both be provided.');
+            reject('Source-path must both be provided.');
     });
 };
 
@@ -218,8 +248,8 @@ exports.get_provision = function(target_path){                   // "force_targe
 */
 
 // Get config (the file that comes from the repo)
-exports.get_config = function(force_temp_path){                   // "force_target_path" used only for testing
-    var temp_path = force_temp_path || util.settings.temp_pathname();
+exports.get_config = function(tag, force_temp_path){                   // "force_target_path" used only for testing
+    var temp_path = force_temp_path || util.settings.temp_pathname(tag);
     return new Promise(function(resolve, reject){
         util.file_folder_exists(temp_path + util.settings.config_filename)
             .then(function(exists){
