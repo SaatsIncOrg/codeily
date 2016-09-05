@@ -66,7 +66,7 @@ exports.get_provision = function(prov_path){
 exports.execute = function(tag, path){
     return new Promise(function(resolve, reject){
         var this_path = util.settings.temp_pathname(tag) + '/' + path;
-        var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 770 " + this_path + "; sudo " + this_path;
+        var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 755 " + this_path + "; sudo " + this_path;
         util.log('Looking to execute: ' + to_execute);
 
         exec(to_execute, // command line argument directly in string
