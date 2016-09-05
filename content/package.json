@@ -1,7 +1,7 @@
 {
   "name": "codeily",
   "description": "Deploys code from Github to a folder.",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "homepage": "",
   "author": "Peter Granderson <zpeterg@gmail.com>",
   "repository": {

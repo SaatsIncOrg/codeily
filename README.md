@@ -40,6 +40,7 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.14 - Minor consollog error fix.
 0.0.13 - Add to readme & fix max-file-open error.
 0.0.12 - Fix repo path bug.
 0.0.11 - Add repo path.
