@@ -1,6 +1,6 @@
 var app 			    = require('../app/retrieve.js')
     , expect            = require("chai").expect
-    , fs                = require('fs')
+    , fs                = require('graceful-fs')
     , util              = require('../app/util.js')
 
 

@@ -1,7 +1,7 @@
 {
   "name": "codeily",
   "description": "Deploys code from Github to a folder.",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "homepage": "",
   "author": "Peter Granderson <zpeterg@gmail.com>",
   "repository": {
@@ -26,10 +26,11 @@
     "test": "test"
   },
   "dependencies": {
-	"bluebird": "~3.3.5",
-	"simple-git": "~1.44.0",
+    "bluebird": "~3.3.5",
+    "graceful-fs": "~4.1.6",
+    "mkdirp": "~0.5.1",
     "rimraf": "~2.5.4",
-    "mkdirp": "~0.5.1"
+    "simple-git": "~1.44.0"
   },
   "license": "MIT"
 }

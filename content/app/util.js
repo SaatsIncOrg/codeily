@@ -1,4 +1,4 @@
-var fs                          = require('fs')
+var fs                          = require('graceful-fs')
     , path_library              = require('path')
     , Promise                   = require('bluebird')
     , rimraf                    = require('rimraf')

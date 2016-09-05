@@ -1,5 +1,5 @@
 var simpleGit               = require('simple-git')
-    , fs                    = require('fs')
+    , fs                    = require('graceful-fs')
     , path_library          = require('path')
     , Promise               = require('bluebird')
     , util                  = require('./util.js');

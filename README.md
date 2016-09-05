@@ -4,13 +4,13 @@
 ```shell
 npm install codeily
 ```
-Once the plugin has been installed, it may be run using this:
+Once the plugin has been installed, it may be run like this:
 ```shell
-node app/app.js
+sudo node /path/to/codeily/app /path/to/root/dir
 ```
 ## Assumptions
 Codeily requires this to be in place:
-- A file named ```_provision_vars.js``` at the root of Codeily, with content like this:
+- A file named ```_provision_vars.js``` at the "root" directory given as argument above, with content like this:
 ```
 [
   {
@@ -40,6 +40,7 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.13 - Add to readme & fix max-file-open error.
 0.0.12 - Fix repo path bug.
 0.0.11 - Add repo path.
 0.0.10 - Add main to package.
