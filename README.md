@@ -35,11 +35,14 @@ Requires:
 - A Linux system.
 - git: ```sudo apt-get install git```
 - grunt-cli: ```npm install -g grunt-cli```
+- Node (eg., nvm)
 Run:
+- Start Node (eg., ```nvm use 6.5.0```).
 - Normal: ```grunt```
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.18 - Added change of directory prior to script execution.
 0.0.17 - Fix file-rights issue.
 0.0.16 - Remove old "remove" info from state file.
 0.0.15 - Leave temp-repo and pull subsequent to initial - to increase speed.

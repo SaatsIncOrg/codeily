@@ -34,7 +34,7 @@ function run_sequence(prov_vars, suppress_exec){
             })
             .then(function(){
                 if (!suppress_exec && config.script_after && config.script_after.length > 0)
-                    return exports.loop_execute(prov_vars.tag, config.script_after);                             // passes the script_after array for looping on execute
+                    return exports.loop_execute(prov_vars.tag, config.script_after, prov_vars.path);                             // passes the script_after array for looping on execute
             })
             .then(function(){                                                           // Delete temp repo folder
                 //return util.delete_folder(util.settings.temp_pathname(prov_vars.tag));
@@ -63,10 +63,10 @@ exports.get_provision = function(prov_path){
         });
 };
 
-exports.execute = function(tag, path){
+exports.execute = function(tag, path, target_path){
     return new Promise(function(resolve, reject){
         var this_path = util.settings.temp_pathname(tag) + '/' + path;
-        var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 755 " + this_path + "; sudo " + this_path;
+        var to_execute = "sudo sed -i 's/\r//' " + this_path + "; sudo chmod 755 " + this_path + "; (cd " + target_path + " && sudo " + this_path + ")";      // Run script from the target dir
         util.log('Looking to execute: ' + to_execute);
 
         exec(to_execute, // command line argument directly in string
@@ -81,7 +81,7 @@ exports.execute = function(tag, path){
     });
 };
 
-exports.loop_execute = function(tag, scripts){
+exports.loop_execute = function(tag, scripts, target_path){
     return new Promise(function(resolve, reject){
         function check_end(){
             total++;
@@ -95,7 +95,7 @@ exports.loop_execute = function(tag, scripts){
             total = 0;
 
         scripts.forEach(function(element, index){
-            exports.execute(tag, element)
+            exports.execute(tag, element, target_path)
                 .then(function(){
                     check_end();
                 })
