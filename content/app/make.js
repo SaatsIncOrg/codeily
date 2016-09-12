@@ -64,62 +64,68 @@ exports.loop_list = function(source_path, target_path, array){
         var length = array.length,
             total = 0;
 
-        array.forEach(function (element, index) {
-            var target = target_path + '/' + element.file,
-                source = source_path + '/' + element.file;
-            //console.log('###################', target, source);
+        if (array.length <= 0){                         // empty list
+            reject('Loop_list: no files in list to process.');
+        }
+        else {                                          // something exists in list
+            array.forEach(function (element, index) {
+                var target = target_path + '/' + element.file,
+                    source = source_path + '/' + element.file;
+                //console.log('###################', target, source);
 
-            if (element.action === 'remove'){                           // remove
-                //console.log('!!!!!!!!!!!!!!!! REMOVING');
-                util.file_folder_exists(target)
-                    .then(function(exists){
-                        if (exists)
-                            util.delete_file(target)
-                                .then(function(){
-                                    check_end();
-                                })
-                                .catch(function(err){
-                                    reject(err);
-                                });
-                    })
-                    .catch(function(err){
-                        reject('Failed to remove file: ' + err);
-                    })
-            }
-            else{                                                       // add
-                //console.log('!!!!!!!!!!!!!!!! ADDING: ' + target);
-                util.file_folder_exists(target)
-                    .then(function(exists){
-                        if (exists) {
+                if (element.action === 'remove'){                           // remove
+                    //console.log('!!!!!!!!!!!!!!!! REMOVING');
+                    util.file_folder_exists(target)
+                        .then(function(exists){
+                            if (exists)
+                                util.delete_file(target)
+                                    .then(function(){
+                                        check_end();
+                                    })
+                                    .catch(function(err){
+                                        reject('Failed to delete file:' + err);
+                                    });
+                        })
+                        .catch(function(err){
+                            reject('Failed to remove file: ' + err);
+                        })
+                }
+                else{                                                       // add
+                    //console.log('!!!!!!!!!!!!!!!! ADDING: ' + target);
+                    util.file_folder_exists(target)
+                        .then(function(exists){
+                            if (exists) {
 
-                            return exports.copy_file(source, target)
-                                .then(function(){
-                                    check_end();
-                                })
-                                .catch(function(err){
-                                    reject('Error in copying file: ' + err)
-                                });
-                        }
-                        else{
+                                return exports.copy_file(source, target)
+                                    .then(function(){
+                                        check_end();
+                                    })
+                                    .catch(function(err){
+                                        reject('Error in copying file: ' + err)
+                                    });
+                            }
+                            else{
 
-                            return exports.make_dir(target)
-                                .then(function(){
-                                    //console.log('88888888888888888888 made dir ' + target);
-                                    return exports.copy_file(source, target);
-                                })
-                                .then(function(){
-                                    check_end();
-                                })
-                                .catch(function(err){
-                                    reject('Error making directory / copying file: ' + err);
-                                })
-                        }
-                    })
-                    .catch(function(err){
-                        reject('Failed to copy files: ' + err);
-                    });
-            }
-        });
+                                return exports.make_dir(target)
+                                    .then(function(){
+                                        //console.log('88888888888888888888 made dir ' + target);
+                                        return exports.copy_file(source, target);
+                                    })
+                                    .then(function(){
+                                        check_end();
+                                    })
+                                    .catch(function(err){
+                                        reject('Error making directory / copying file: ' + err);
+                                    })
+                            }
+                        })
+                        .catch(function(err){
+                            reject('Failed to copy files: ' + err);
+                        });
+                }
+            });
+        }
+
     });
 };
 

@@ -42,6 +42,7 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.19 - Add failure on empty file list.
 0.0.18 - Added change of directory prior to script execution.
 0.0.17 - Fix file-rights issue.
 0.0.16 - Remove old "remove" info from state file.

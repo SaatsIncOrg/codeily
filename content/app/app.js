@@ -29,7 +29,7 @@ function run_sequence(prov_vars, suppress_exec){
                 source_path = util.settings.temp_pathname(prov_vars.tag) + (config.repo_path || '');
                 return retrieve.build_state(source_path, config.ignore, prov_vars.path);               // use repo-path to limit copies, if available
             })
-            .then(function(){
+            .then(function(){       ////////////////////////////////////////////////////////////////////// todo: this seems to be the farthest that it makes it for sure - doesn't make it to execute
                 return make.process_list(source_path, prov_vars.path);                                  // use same repo-path as above
             })
             .then(function(){
