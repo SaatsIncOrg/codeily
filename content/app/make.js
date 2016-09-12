@@ -77,7 +77,7 @@ exports.loop_list = function(source_path, target_path, array){
                     //console.log('!!!!!!!!!!!!!!!! REMOVING');
                     util.file_folder_exists(target)
                         .then(function(exists){
-                            if (exists)
+                            if (exists)                                     // if exists, delete it.
                                 util.delete_file(target)
                                     .then(function(){
                                         check_end();
@@ -85,6 +85,8 @@ exports.loop_list = function(source_path, target_path, array){
                                     .catch(function(err){
                                         reject('Failed to delete file:' + err);
                                     });
+                            else                                            // if doesn't exist - ignore
+                                check_end();
                         })
                         .catch(function(err){
                             reject('Failed to remove file: ' + err);

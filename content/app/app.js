@@ -29,17 +29,21 @@ function run_sequence(prov_vars, suppress_exec){
                 source_path = util.settings.temp_pathname(prov_vars.tag) + (config.repo_path || '');
                 return retrieve.build_state(source_path, config.ignore, prov_vars.path);               // use repo-path to limit copies, if available
             })
-            .then(function(){       ////////////////////////////////////////////////////////////////////// todo: this seems to be the farthest that it makes it for sure - doesn't make it to execute
+            .then(function(){
+                console.log('About to process list.');
                 return make.process_list(source_path, prov_vars.path);                                  // use same repo-path as above
             })
             .then(function(){
-                if (!suppress_exec && config.script_after && config.script_after.length > 0)
+                if (!suppress_exec && config.script_after && config.script_after.length > 0){
+                    console.log('Executing scripts.');
                     return exports.loop_execute(prov_vars.tag, config.script_after, prov_vars.path);                             // passes the script_after array for looping on execute
-            })
-            .then(function(){                                                           // Delete temp repo folder
-                //return util.delete_folder(util.settings.temp_pathname(prov_vars.tag));
+                }
+                else
+                    console.log('No scripts to execute.');
+
             })
             .then(function(){
+                console.log('Finished successfully!');
                 resolve();
             })
             .catch(function(err){
@@ -71,8 +75,8 @@ exports.execute = function(tag, path, target_path){
 
         exec(to_execute, // command line argument directly in string
             function (err, stdout, stderr) {      // one easy function to capture data/errors
-                console.log('stdout: ' + stdout);
-                console.log('stderr: ' + stderr);
+                console.log('Script Output: ' + stdout);
+                console.log('Script Error: ' + stderr);
                 if (err)
                     reject('Error Executing Script: ', err);
                 else
