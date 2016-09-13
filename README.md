@@ -42,6 +42,7 @@ Run:
 - Include github calls: ```grunt mochaTest:all```
 
 ## Release History
+0.0.23 - Add pull back with force-drop.
 0.0.22 - Force drop of any git local changes.
 0.0.21 - Add console output.
 0.0.20 - Add ignore of missing "remove" files.

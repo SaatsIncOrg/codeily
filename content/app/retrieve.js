@@ -42,8 +42,9 @@ function go_pull(tag, branch){                          // actually does a fetch
 
         simpleGit(util.settings.temp_pathname(tag))
             .checkout(branch)
-            .fetch()
-            .reset('hard')
+            //.fetch('origin', branch)
+            .reset('hard')                      // attempt at forcing overwrite
+            .pull()
             .then(function (err) {
 
                 if (err) {                                                                      // if can't clone, faile and delete directory
