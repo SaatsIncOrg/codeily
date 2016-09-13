@@ -34,15 +34,16 @@ function go_retrieve(tag, repo, branch){
             })
     });
 }
-function go_pull(tag, branch){
+function go_pull(tag, branch){                          // actually does a fetch and hard-reset to overwrite any local changes.
     return new Promise(function(resolve, reject){
         branch = branch || "master";
 
         console.log('About to pull branch ' + branch + ' at folder ' + util.settings.temp_pathname(tag));
 
         simpleGit(util.settings.temp_pathname(tag))
-            .pull()
             .checkout(branch)
+            .fetch()
+            .reset('hard')
             .then(function (err) {
 
                 if (err) {                                                                      // if can't clone, faile and delete directory
